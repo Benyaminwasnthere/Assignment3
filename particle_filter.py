@@ -122,7 +122,7 @@ def particle_filter(prior_particle, control, measurement,landmarks):
     prior = np.array(prior_particle, dtype=object)
     for i in range(len(prior_particle)):
         particle = np.random.choice(prior[:, 0], 1, p=prior[:, 1].astype(np.float64))[0]
-        new_pos = particle[0] + next_position([control[0] + np.random.normal(0, sigma_distance), control[1] + np.random.normal(0, sigma_direction)],particle)
+        new_pos = particle + next_position([control[0] + np.random.normal(0, sigma_distance), control[1] + np.random.normal(0, sigma_direction)],particle)
         particle_observation = landmark_sensor(new_pos[0], new_pos[1], new_pos[2], landmarks)
 
         # Calculate joint Gaussian probability (likelihood) for all landmarks
