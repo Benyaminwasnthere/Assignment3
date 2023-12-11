@@ -53,7 +53,7 @@ if __name__ == "__main__":
     #controls/controls_X_Y.npy
     #gts/gt_X_Y.npy
     #"readings/readings_X_Y_L.npy"
-    control_sequence = np.load("controls/controls_0_1.npy", allow_pickle=True)
+    control_sequence = np.load("controls/controls_4_2.npy", allow_pickle=True)
     initial_location = control_sequence[0]
     control_sequence = control_sequence[1:]
 

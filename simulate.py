@@ -17,7 +17,7 @@ def differential_drive_model(q, u):
 
 
 #--------------------------------------------------------------------Create model for Odometery
-def Odometery(landmarks_map,measurements):
+def Odometery(landmarks_map,measurements,Actuation_Model):
 
     print("Odometry Model:")
     initial_location = measurements[0]
@@ -31,7 +31,7 @@ def Odometery(landmarks_map,measurements):
     for i in range(len(control_sequence)):
         dq = differential_drive_model(q, control_sequence[i])
         q += dq
-        trajectory.append(landmark_sensor(q[0], q[1], q[2], landmarks_map))
+        trajectory.append(landmark_sensor(Actuation_Model[i][0],Actuation_Model[i][1],Actuation_Model[i][2], landmarks_map))
         trajectory.append(control_sequence[i])
 
         print(f"Odometry Controls-{i}  ", control_sequence[i])
@@ -156,8 +156,9 @@ def simulate(plan_file, map_file, execution_file, sensing_file,V):
         sigma_e_omega= 0.05
         sigma_e_phi= 0.1
     Odometery_controls= generate_odometry(Actuation_controls,sigma_e_omega,sigma_e_phi)
-    Odometery_Model = Odometery( landmarks_map,Odometery_controls)
+    Odometery_Model = Odometery( landmarks_map,Odometery_controls,Actuation_Model)
     np.save(os.path.join(sensing_file), Odometery_Model)
+
 
 
 if __name__ == "__main__":

@@ -1,5 +1,6 @@
 import argparse
 import math
+import os
 
 import numpy as np
 import argparse
@@ -122,7 +123,7 @@ def particle_filter(prior_particle, control, measurement,landmarks):
     prior = np.array(prior_particle, dtype=object)
     for i in range(len(prior_particle)):
         particle = np.random.choice(prior[:, 0], 1, p=prior[:, 1].astype(np.float64))[0]
-        new_pos = particle[0] + next_position([control[0] + np.random.normal(0, sigma_distance), control[1] + np.random.normal(0, sigma_direction)],particle)
+        new_pos = particle + next_position([control[0] + np.random.normal(0, sigma_distance), control[1] + np.random.normal(0, sigma_direction)],particle)
         particle_observation = landmark_sensor(new_pos[0], new_pos[1], new_pos[2], landmarks)
 
         # Calculate joint Gaussian probability (likelihood) for all landmarks
@@ -155,7 +156,7 @@ def particle_filter(prior_particle, control, measurement,landmarks):
 
 
 # ------------------------------------------
-def animate(controls, measurements, initial, landmarks_map, length, width, particles):
+def animate(controls, measurements, initial, landmarks_map, length, width, particles,estim_file):
     fig, ax = plt.subplots(figsize=(6, 6))
     trajectory = []
     trajectory_estimate = []
@@ -197,9 +198,10 @@ def animate(controls, measurements, initial, landmarks_map, length, width, parti
         draw_rotated_rectangle(ax, [average_position[0], average_position[1]], length, width,
                                np.degrees(average_position[2]), 'black')
         plt.pause(0.05)
-    plt.show()
 
-
+    estim_tr = np.array( trajectory_estimate, dtype=object)
+    np.save(os.path.join("estim1", estim_file), estim_tr)
+    print("created estim1/", estim_file)
 # ------------------------------------------
 def create_initial_particle(initial, n):
     particle = [[initial, 1 / n] for i in range(n)]
@@ -208,6 +210,11 @@ def create_initial_particle(initial, n):
 
 # ------------------------------------------
 if __name__ == "__main__":
+
+    if not os.path.exists("estim1"):
+        os.makedirs("estim1")
+
+
     #--map maps/landmark_0.npy --sensing readings/readings_0_1_H.npy --num_particles 20
     # Parse command line arguments
     parser = argparse.ArgumentParser(description="Particle Filter for Robot Pose Estimation")
@@ -222,4 +229,7 @@ if __name__ == "__main__":
     control_sequence = controls[1:]
     particle = create_initial_particle(initial_location, args.num_particles)
     landmarks_map = np.load(args.map)
-    animate(control_sequence, measurements, initial_location, landmarks_map, length, width, particle)
+
+    estim_file = f"estim1_{args.sensing[18]}_{args.sensing[20]}_{args.sensing[22]}_{args.num_particles}"
+
+    animate(control_sequence, measurements, initial_location, landmarks_map, length, width, particle,estim_file)

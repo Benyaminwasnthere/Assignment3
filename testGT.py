@@ -52,7 +52,7 @@ if __name__ == "__main__":
     #testing
     #controls/controls_X_Y.npy
     #gts/gt_X_Y.npy
-    t= np.load("gts/gt_0_1.npy", allow_pickle=True)
+    t= np.load("estim1/estim1_0_1_H_200.npy", allow_pickle=True)
 
 
     # Animate the robot trajectory

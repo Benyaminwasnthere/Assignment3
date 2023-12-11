@@ -14,6 +14,6 @@ def load_landmark_map(map_name):
 
 # Load a single landmark map and visualize it
 if __name__ == '__main__':
-    map_name = 0  # Change this to the desired map number
+    map_name = 4  # Change this to the desired map number
     landmark_map = load_landmark_map(map_name)
     visualize_map(landmark_map, f'Landmark Map with {len(landmark_map)} Landmarks (MAP{map_name})')
